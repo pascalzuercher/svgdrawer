@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>SVG Drawer</title>
+	<link rel="stylesheet" href="https://gymburgdorf-ef23.github.io/helpers/basicstyle.css"></link>
+	<style>
+		.wrap {background-color: rgb(15, 110, 110);}
+	</style>
+</head>
+<body>
+	<h1>SVG Drawer</h1>
+	<div class="wrap"><svg class="drawing" width=800 height=300></svg></div>
+	<script>
+	const drawArea = document.querySelector(".drawing")
+	drawArea.addEventListener("pointermove", collectPoints)
+	drawArea.addEventListener("pointerdown", startDrawing)
+	drawArea.addEventListener("pointerup", stopDrawing)
+	drawArea.addEventListener("pointerleave", stopDrawing)
+
+	let isDrawing = false
+	let points = []
+    let time = 0
+
+	function startDrawing() {
+		isDrawing = true
+	}
+
+	function stopDrawing() {
+		isDrawing = false
+		//points = []
+	}
+
+	function collectPoints(event) {
+		if(isDrawing) {
+			var rect = drawArea.getBoundingClientRect();
+			
+            var x = event.clientX - rect.left
+            var y = event.clientY - rect.top
+            points.push({
+                x: x,
+                y: y,
+                t: time
+            })
+
+            points = points.slice(-500)
+
+            
+
+
+
+
+
+			
+		}
+	}
+
+    function draw() {
+        if(points.length>0) {
+
+            time += 1
+
+            drawArea.innerHTML = ""
+            let maxAge = time - points[0].t
+            for(var p of points) {
+                let age = time-p.t
+                let r = 20 - 19.5 * (age/maxAge)
+                drawArea.innerHTML += `
+                <circle r=${20-0.1*age} cx=${p.x} cy=${p.y}></circle>
+                `
+                r+=0.5
+            }
+        }
+
+        requestAnimationFrame(draw)
+    }
+
+    draw()
+	
+	</script>
+</body>
+</html>
